@@ -17,7 +17,7 @@ helm install --generate-name --wait ghcr.io/bank-vaults/helm-charts/vault-operat
 | replicaCount | int | `1` | Number of replicas (pods) to launch. |
 | image.repository | string | `"ghcr.io/bank-vaults/vault-operator"` | Name of the image repository to pull the container image from. |
 | image.pullPolicy | string | `"IfNotPresent"` | [Image pull policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for updating already existing images on a node. |
-| image.tag | string | `""` | Image tag override for the default value (chart appVersion). |
+| image.tag | string | `"dev"` | Image tag override for the default value (chart appVersion). |
 | image.imagePullSecrets | list | `[]` | Reference to one or more secrets to be used when [pulling images](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-pod-that-uses-your-secret) (from private registries). (`global.imagePullSecrets` is also supported) |
 | image.bankVaultsRepository | string | `""` | Bank-Vaults image repository **Deprecated:** use `bankVaults.image.repository` instead. |
 | image.bankVaultsTag | string | `""` | Bank-Vaults image tag **Deprecated:** use `bankVaults.image.tag` instead. |

@@ -86,11 +86,11 @@ func main() {
 	var webhookPort int
 	var webhookCertDir, webhookCertName, webhookCertKey string
 	if os.Getenv("WEBHOOK_TLS") == "true" {
-		webhookPort = 8443
+		webhookPort = 9443
 		webhookCertDir = "/etc/admission-webhook/tls"
 		webhookCertName, webhookCertKey = "tls.crt", "tls.key"
 	} else {
-		webhookPort = webhook.DefaultPort
+		webhookPort = 9080
 	}
 
 	// Create a new Cmd to provide shared dependencies and start components

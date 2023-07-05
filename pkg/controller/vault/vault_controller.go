@@ -1265,16 +1265,8 @@ func statefulSetForVault(v *vaultv1alpha1.Vault, externalSecretsToWatchItems []c
 	}
 	containers = withVaultContainers(v, containers)
 
-	affinity := &corev1.Affinity{
-		PodAntiAffinity: getPodAntiAffinity(v),
-		NodeAffinity:    getNodeAffinity(v),
-	}
-	if v.Spec.Affinity != nil {
-		affinity = v.Spec.Affinity
-	}
-
 	podSpec := corev1.PodSpec{
-		Affinity: affinity,
+		Affinity: v.Spec.Affinity,
 
 		ServiceAccountName:           v.Spec.GetServiceAccount(),
 		AutomountServiceAccountToken: pointer.Bool(true),
@@ -1793,33 +1785,6 @@ func withHSMVolumeMount(v *vaultv1alpha1.Vault, volumeMounts []corev1.VolumeMoun
 		})
 	}
 	return volumeMounts
-}
-
-func getPodAntiAffinity(v *vaultv1alpha1.Vault) *corev1.PodAntiAffinity {
-	podAntiAffinity := v.Spec.Affinity.PodAntiAffinity
-	if podAntiAffinity == nil || podAntiAffinity.String() == "" {
-		return nil
-	}
-
-	ls := v.LabelsForVault()
-	return &corev1.PodAntiAffinity{
-		RequiredDuringSchedulingIgnoredDuringExecution: []corev1.PodAffinityTerm{
-			{
-				LabelSelector: &metav1.LabelSelector{
-					MatchLabels: ls,
-				},
-				TopologyKey: podAntiAffinity.String(),
-			},
-		},
-	}
-}
-
-func getNodeAffinity(v *vaultv1alpha1.Vault) *corev1.NodeAffinity {
-	nodeAffinity := v.Spec.Affinity.NodeAffinity
-	if nodeAffinity == nil || nodeAffinity.Size() == 0 {
-		return nil
-	}
-	return nodeAffinity
 }
 
 func getVaultURIScheme(v *vaultv1alpha1.Vault) corev1.URIScheme {
