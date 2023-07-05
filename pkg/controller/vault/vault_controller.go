@@ -1420,7 +1420,7 @@ func withVaultConfigurerAnnotations(v *vaultv1alpha1.Vault, annotations map[stri
 	return annotations
 }
 
-func withVaultWatchedExternalSecrets(v *vaultv1alpha1.Vault, secrets []corev1.Secret, annotations map[string]string) map[string]string {
+func withVaultWatchedExternalSecrets(_ *vaultv1alpha1.Vault, secrets []corev1.Secret, annotations map[string]string) map[string]string {
 	if len(secrets) == 0 {
 		// No Labels Selector was defined in the spec , return the annotations without changes
 		return annotations
@@ -1796,7 +1796,8 @@ func withHSMVolumeMount(v *vaultv1alpha1.Vault, volumeMounts []corev1.VolumeMoun
 }
 
 func getPodAntiAffinity(v *vaultv1alpha1.Vault) *corev1.PodAntiAffinity {
-	if v.Spec.PodAntiAffinity == "" {
+	podAntiAffinity := v.Spec.Affinity.PodAntiAffinity
+	if podAntiAffinity == nil || podAntiAffinity.String() == "" {
 		return nil
 	}
 
@@ -1807,17 +1808,18 @@ func getPodAntiAffinity(v *vaultv1alpha1.Vault) *corev1.PodAntiAffinity {
 				LabelSelector: &metav1.LabelSelector{
 					MatchLabels: ls,
 				},
-				TopologyKey: v.Spec.PodAntiAffinity,
+				TopologyKey: podAntiAffinity.String(),
 			},
 		},
 	}
 }
 
 func getNodeAffinity(v *vaultv1alpha1.Vault) *corev1.NodeAffinity {
-	if v.Spec.NodeAffinity.Size() == 0 {
+	nodeAffinity := v.Spec.Affinity.NodeAffinity
+	if nodeAffinity == nil || nodeAffinity.Size() == 0 {
 		return nil
 	}
-	return &v.Spec.NodeAffinity
+	return nodeAffinity
 }
 
 func getVaultURIScheme(v *vaultv1alpha1.Vault) corev1.URIScheme {

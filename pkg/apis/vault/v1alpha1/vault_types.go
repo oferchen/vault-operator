@@ -18,12 +18,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
-	"reflect"
-	"sort"
-	"strings"
-	"time"
-
 	"github.com/Masterminds/semver/v3"
 	"github.com/imdario/mergo"
 	"github.com/spf13/cast"
@@ -32,7 +26,12 @@ import (
 	extv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/utils/pointer"
+	"os"
+	"reflect"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sort"
+	"strings"
+	"time"
 )
 
 var log = ctrl.Log.WithName("controller_vault")
@@ -45,12 +44,12 @@ func init() {
 	}
 }
 
-// Vault is the Schema for the vaults API
-
 // +genclient
 // +genclient:noStatus
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +k8s:openapi-gen=true
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// Vault is the Schema for the vaults API
 type Vault struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -59,19 +58,17 @@ type Vault struct {
 	Status VaultStatus `json:"status,omitempty"`
 }
 
-// VaultList contains a list of Vault
-
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// VaultList contains a list of Vault
 type VaultList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Vault `json:"items"`
+
+	Items []Vault `json:"items"`
 }
 
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // VaultSpec defines the desired state of Vault
-// Important: Run "make generate-code" to regenerate code after modifying this file
 type VaultSpec struct {
 
 	// Size defines the number of Vault instances in the cluster (>= 1 means HA)
