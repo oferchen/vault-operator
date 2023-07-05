@@ -3,11 +3,13 @@ package admission
 import (
 	"encoding/json"
 	"fmt"
-	vaultv1alpha1 "github.com/bank-vaults/vault-operator/pkg/apis/vault/v1alpha1"
-	"github.com/bank-vaults/vault-operator/pkg/webhook/mutation"
+	"net/http"
+
 	"github.com/sirupsen/logrus"
 	admissionv1 "k8s.io/api/admission/v1"
-	"net/http"
+
+	vaultv1alpha1 "github.com/bank-vaults/vault-operator/pkg/apis/vault/v1alpha1"
+	"github.com/bank-vaults/vault-operator/pkg/webhook/mutation"
 )
 
 // serveMutateVault returns an admission review with Vault mutations as a json patch
@@ -23,7 +25,7 @@ func serveMutateVault(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	out, err := mutateVaultReview(logger, in.Request)
+	out, err := mutateVaultReview(in.Request)
 	if err != nil {
 		e := fmt.Sprintf("could not generate admission response: %v", err)
 		logger.Error(e)
@@ -47,7 +49,7 @@ func serveMutateVault(w http.ResponseWriter, r *http.Request) {
 
 // mutateVaultReview takes an admission request and mutates the Vault within,
 // it returns an admission review with mutations as a json patch (if any)
-func mutateVaultReview(logger *logrus.Entry, req *admissionv1.AdmissionRequest) (*admissionv1.AdmissionReview, error) {
+func mutateVaultReview(req *admissionv1.AdmissionRequest) (*admissionv1.AdmissionReview, error) {
 	vault, err := getVault(req)
 	if err != nil {
 		e := fmt.Sprintf("could not parse vault in admission review request: %v", err)

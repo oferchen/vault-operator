@@ -16,10 +16,8 @@ package main
 
 import (
 	"flag"
-	"github.com/bank-vaults/vault-operator/pkg/webhook/admission"
 	"net"
 	"os"
-	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"time"
 
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -30,9 +28,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
+	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	"github.com/bank-vaults/vault-operator/pkg/apis"
 	"github.com/bank-vaults/vault-operator/pkg/controller"
+	"github.com/bank-vaults/vault-operator/pkg/webhook/admission"
 )
 
 var log = ctrl.Log.WithName("cmd")
